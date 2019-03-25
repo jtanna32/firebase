@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in"
+        android:textStyle="bold"
+        android:textSize="40dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginLeft="100dp"/>
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="email"
+        android:gravity="center"
+        android:layout_marginTop="270dp"
+        android:layout_marginLeft="70dp"/>
+
+
+    <Button
+        android:id="@+id/sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign in"
+        android:background="@color/deep_pink"
+        android:textColor="@color/white"
+        android:layout_marginTop="380dp"
+        android:layout_marginLeft="140dp"
+        android:textStyle="bold"
+        />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="password"
+        android:gravity="center"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="320dp"/>
+
+    <TextView
+        android:id="@+id/signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Not registered yet? Sign up here"
+        android:textColor="@color/red"
+        android:textStyle="bold"
+        android:layout_marginTop="470dp"
+        android:layout_marginLeft="80dp"/>
+</RelativeLayout>
