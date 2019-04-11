@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,62 +18,77 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class homepage extends AppCompatActivity {
+public class homepage extends AppCompatActivity implements View.OnClickListener{
     Button button;
     EditText number;
-    EditText message;
-    Button send;
+    EditText messge;
+    Button send1;
     FirebaseAuth firebaseAuth;
-    final int SEND_SMS_PERMISSION_REQUEST_CODE = 1;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        number = findViewById(R.id.number);
-        message = findViewById(R.id.mess);
-        send = findViewById(R.id.send);
         setContentView(R.layout.activity_homepage);
+
+        number = findViewById(R.id.number);
+        messge = findViewById(R.id.mess);
+        send1 = findViewById(R.id.send);
         firebaseAuth = FirebaseAuth.getInstance();
         button = findViewById(R.id.logout);
 
-        send.setEnabled(false);
-        if(CheckPermission(Manifest.permission.SEND_SMS)){
-            send.setEnabled(true);
-        }
-            else
-          {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.SEND_SMS}, SEND_SMS_PERMISSION_REQUEST_CODE);
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseAuth.signOut();
-                startActivity(new Intent(homepage.this,MainActivity.class));
+        send1.setOnClickListener(this);
+        button.setOnClickListener(this);
+        if (ContextCompat.checkSelfPermission(homepage.this,
+                Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(homepage.this,
+                    Manifest.permission.SEND_SMS)) {
+                ActivityCompat.requestPermissions(homepage.this,
+                        new String[]{Manifest.permission.SEND_SMS}, 1);
+            } else {
+                ActivityCompat.requestPermissions(homepage.this,
+                        new String[]{Manifest.permission.SEND_SMS}, 1);
             }
-        });
-    }
-
-    public void onSend(View v){
-        String phonenumber = number.getText().toString();
-        String smsMessage = message.getText().toString();
-
-        if(phonenumber == null || phonenumber.length() == 0 || smsMessage == null || smsMessage.length() == 0){
-            return;
-        }
-
-        if (CheckPermission(Manifest.permission.SEND_SMS)) {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(phonenumber, null, smsMessage , null, null);
-            Toast.makeText(this, "Message sent", Toast.LENGTH_SHORT).show();
-        }
-        else
+        }else
         {
-            Toast.makeText(this,"message not sent",Toast.LENGTH_SHORT).show();
+
         }
     }
 
-    public boolean CheckPermission(String permission){
-        int check = ContextCompat.checkSelfPermission(this, permission);
-        return (check == PackageManager.PERMISSION_GRANTED);
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case 1: {
+                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if(ContextCompat.checkSelfPermission(homepage.this,
+                            Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED){
+                        Toast.makeText(this, "permission granted", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(this, "permission not granted",Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == send1){
+            String num = number.getText().toString();
+            String mss = messge.getText().toString();
+
+            try{
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(num,null,mss,null,null);
+                Toast.makeText(homepage.this,"Sent", Toast.LENGTH_SHORT).show();
+            }catch (Exception e){
+                Toast.makeText(homepage.this,"failed", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (v == button){
+            firebaseAuth.signOut();
+            startActivity(new Intent(homepage.this,MainActivity.class));
+        }
     }
 }
